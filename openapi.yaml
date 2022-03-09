@@ -20,8 +20,7 @@ paths:
         - name: "sort"
           in: query
           schema:
-            enum:
-              - "REGISTRATION_DESC"
+              $ref: "#/components/schemas/SortOrder"
       responses:
         '200':
           description: All matching registrations
@@ -32,7 +31,18 @@ paths:
 
 components:
   schemas:
+    SortOrder:
+      type: string
+      example: "REGISTRATION_DESC"
+      enum:
+      - "REGISTRATION_DESC"
+      - "REGISTRATION_ASC"
+      - "NAME_ASC"
+      - "NAME_DESC"
+      - "FINANCIALEXPENSES_DESC"
+
     DetailedSearchResults:
+      type: object
       required:
         - source
         - sourceUrl
@@ -62,17 +72,53 @@ components:
             queryString:
               type: string
             sortOrder:
-              type: string
-              example: "REGISTRATION_DESC"
+              $ref: "#/components/schemas/SortOrder"
             facets:
               type: array
+              items:
+                $ref: "#/components/schemas/Facet"
             numberRanges:
               type: array
+              items:
+                $ref: "#/components/schemas/NumberRange"
         resultCount:
           type: integer
         results:
           $ref: "#/components/schemas/SearchResult"
+    
+    Facet:
+      type: object
+      properties:
+        attribute: 
+          type: string
+          example: "legalform"
+          enum:
+            - "legalform"
+            - "legalformtype"
+            - "workascontractor"
+            - "activity"
+            - "fieldsofinterest"
+        values:
+          type: array
+          items:
+            type: string
+            example: "LF_AG"
+
+    NumberRange:
+      type: object
+      properties:
+        attribute:
+          type: string
+          example: "clients"
+        from:
+          type: integer
+          example: 0
+        to:
+          type: integer
+          example: 10000
+
     SearchResult:
+      type: object
       properties:
         registerNumber:
           type: string
@@ -81,6 +127,7 @@ components:
           $ref: "#/components/schemas/Entry"
 
     Entry:
+      type: object
       required:
         - id
       properties:

@@ -1,34 +1,704 @@
-openapi: "3.0.0"
+openapi: '3.0.2'
 info:
-  description: "API Description"
-  version: "1.0.0"
-  title: "Amtsname: API Name"
+  title: "Bundestag: Lobbyregister"
+  version: '1.3' # According to the latest newsletter
 
 servers:
-  - url: "https://warnung.bund.de/api31"
+  - url: https://www.lobbyregister.bundestag.de/
 
 paths:
-  /dashboard/{AGS}.json:
+  /sucheDetailJson:
     get:
-      summary: Name des Endpoints
-      responses:
-        '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Result'
+      summary: "Search through all registrations"
+      operationId: "sucheDetailJson"
       parameters:
-        - in: path
-          required: true
-          name: AGS
+        - name: "q"
+          description: "The text to search for. Will search in all text fields.\n\nLeave empty to retrieve all registrations"
+          in: query
           schema:
             type: string
-          description: Amtlicher Gebietsschlüssel - kann z.B. von [hier](https://www.xrepository.de/api/xrepository/urn:de:bund:destatis:bevoelkerungsstatistik:schluessel:rs_2021-07-31/download/Regionalschl_ssel_2021-07-31.json) bezogen werden. Die Letzten 7 Stellen müssen dabei mit "0000000" ersetzt werden, weil die Daten nur auf [Kreisebene](https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel) bereitgestellt werden. 
-          example: "example-parameter"
+        - name: "sort"
+          in: query
+          schema:
+            enum:
+              - "REGISTRATION_DESC"
+      responses:
+        '200':
+          description: All matching registrations
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/DetailedSearchResults"
 
-          
-components: 
-    schemas:
-      Result:
-        type: string
+components:
+  schemas:
+    DetailedSearchResults:
+      required:
+        - source
+        - sourceUrl
+        - searchUrl
+        - searchDate
+      properties:
+        source:
+          type: string
+          default: "Deutscher Bundestag, Lobbyregister für die Interessenvertretung gegenüber dem Deutschen Bundestag und der Bundesregierung"
+        sourceUrl:
+          type: string
+          default: "https://www.lobbyregister.bundestag.de"
+        searchUrl:
+          type: string
+          example: "https://www.lobbyregister.bundestag.de/suche?sort=REGISTRATION_DESC"
+        searchDate:
+          type: string
+          example: "2022-03-01T17:55:09.667Z"
+        searchParameters:
+          type: object
+          required:
+            - queryString
+            - sortOrder
+            - facets
+            - numberRanges
+          properties:
+            queryString:
+              type: string
+            sortOrder:
+              type: string
+              example: "REGISTRATION_DESC"
+            facets:
+              type: array
+            numberRanges:
+              type: array
+        resultCount:
+          type: integer
+        results:
+          $ref: "#/components/schemas/SearchResult"
+    SearchResult:
+      properties:
+        registerNumber:
+          type: string
+          example: "R001234"
+        registerEntryDetail:
+          $ref: "#/components/schemas/Entry"
+
+    Entry:
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          example: 1234
+        clientIdentity:
+          type: string
+          description: |
+            Possible clients this entity is lobbying for.
+
+            - `BOTH`: Clients include legal entities and  natural persons
+            - `NATURAL_PERSON`: Clients are only natural persons
+            - `ORGANIZATION`: Clients are only legal entities
+            - `-` There is no client, the entity is lobbying for itself
+          enum:
+            - "BOTH"
+            - "NATURAL_PERSON"
+            - "ORGANIZATION"
+            - "-"
+          example: "BOTH"
+        employeeCount:
+          type: object
+          description: Number of lobbying employees, in increments of ten. 
+          required:
+            - "from"
+            - "to"
+          properties:
+            from:
+              type: integer
+              example: 1
+            to:
+              type: integer
+              example: 10
+        refuseFinancialExpensesInformation:
+          type: boolean
+        financialExpensesEuro:
+          type: object
+          required:
+            - "from"
+            - "to"
+            - "fiscalYearStart"
+            - "fiscalYearEnd"
+          properties:
+            from: 
+              type: integer
+              example: 130001
+            to: 
+              type: integer
+              example: 140000
+            fiscalYearStart:
+              type: string
+              example: "01/21"
+            fiscalYearEnd:
+              type: string
+              example: "12/21"
+        refusePublicAllowanceInformation:
+          type: boolean
+        refuseDonationInformation:
+          type: boolean
+        donationInformationRequired:
+          type: boolean
+          description: |
+            True, if this entity received more than € 20,000 of donations from a single donor in the last calendar year
+        locationOfReportPublication:
+          type: string
+        account:
+          type: object
+          properties:
+            registerNumber:
+              type: string
+              example: "R001234"
+            firstPublicationDate:
+              type: string
+              example: "2022-03-01T17:42:53.000Z"
+        activityDescription:
+          type: string
+        activityOperationType:
+          type: string
+          description: |
+            - `MANDATE_OPERATED`: The entity is mandated to lobby for another entity
+            - `SELF_OPERATED`: The entity lobbies for itself
+            - `BOTH`: The entity lobbies for itself and in the mandate of others.
+          example: "BOTH"
+          enum:
+            - "BOTH"
+            - "SELF_OPERATED"
+            - "MANDATE_OPERATED"
+        activity:
+          $ref: "#/components/schemas/Activity"
+        codexViolation:
+          type: boolean
+        lobbyistIdentity:
+          $ref: "#/components/schemas/LobbyistIdentity"
+        legislativeProjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/LegislativeProject"
+        donators:
+          $ref: "#/components/schemas/Donator"
+        fieldsOfInterest:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldOfInterest"
+        clientOrganizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientOrganization"
+        clientPersons:
+          type: array
+          items:
+            $ref: "#/components/schemas/NamedEmployee"
+        registerEntryMedia:
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+        disclosureRequirementsExist:
+          type: boolean
+        refuseAnnualFinanceStatement:
+          type: boolean
+        annualReportExist:
+          type: boolean
+        missingAnnualReportReason:
+          type: string
+
+    Activity:
+      type: object
+      required:
+        - "code"
+      properties:
+        code:
+          type: string
+          example: ACT_ORGANIZATION
+          enum:
+            - "ACT_CONSULTING"
+            - "ACT_EMPLOYEE_ASSOC"
+            - "ACT_EMPLOYER_ASSOC"
+            - "ACT_LAWYER"
+            - "ACT_NONPROFIT_ORGA"
+            - "ACT_ORGANIZATION"
+            - "ACT_OTHER"
+            - "ACT_PRIVATE"
+            - "ACT_PRIVATE_ORGA"
+            - "ACT_PROFESSION_ASSOC"
+            - "ACT_PUBLIC_LAW_ORGA"
+            - "ACT_RELIGIOUS_GROUP"
+            - "ACT_RESEARCH_FACILITY"
+            - "ACT_TRADE_ASSOC"
+        de:
+          type: string
+          example: "Unternehmen"
+          enum:
+            - "Beratungsunternehmen, selbständige Beraterin oder selbständiger Berater"
+            - "Arbeitnehmerverband"
+            - "Arbeitgeberverband"
+            - "Anwaltskanzlei, Einzelanwältin oder Einzelanwalt"
+            - "Nichtstaatliche Organisation (Nichtregierungsorganisation, Plattform oder Netzwerk)"
+            - "Unternehmen"
+            - "Privatperson"
+            - "Privatrechtliche Organisation mit Gemeinwohlaufgaben (z. B. eingetragene Vereine, Stiftungen)"
+            - "Berufsverband"
+            - "Öffentlich-rechtliche Organisation (z. B. Körperschaften, Anstalten und Stiftungen des öffentlichen Rechts)"
+            - "Kirche oder andere Religions- oder Weltanschauungsgemeinschaft"
+            - "Denkfabrik, Forschungseinrichtung oder Hochschule"
+            - "Wirtschaftsverband oder Gewerbeverband/-verein"
+        en:
+          type: string
+          example: "Company"
+          enum:
+            - "Consulting company, independent consultant"
+            - "Workers association"
+            - "Employers association"
+            - "Law firm, individual attorney"
+            - "Non-governmental organizations (non-governmental organization, platform or network)"
+            - "Company"
+            - "Private citizen"
+            - "Organization under private law with public welfare tasks (e.g. registered associations, foundations)"
+            - "Professional association"
+            - "Public law organization (e.g. corporations, institutions and foundations under public law)"
+            - "Church or other religious or ideological community"
+            - "Think tank, research institution or university"
+            - "Trade association"
+        text:
+          type: string
+
+    LobbyistIdentity:
+      type: object
+      properties:
+        identity:
+          type: string
+          description: |
+            Wether this entity is a natural person or a legal entity.
+          example: "ORGANIZATION"
+          enum:
+          - "ORGANIZATION"
+          - "NATURAL"
+        name:
+          type: string
+        phoneNumber:
+          type: string
+          example: "+4911132323232"
+        address:
+          $ref: "#/components/schemas/Address"
+        legalForm:
+          $ref: "#/components/schemas/LegalForm"
+        organizationEmails:
+          type: array
+          items:
+            type: string
+            example: "max.mustermann@acme.org"
+        websites:
+          type: array
+          items:
+            type: string
+            example: "https://acme.org"
+        legalRepresentatives:
+          type: array
+          items:
+            $ref: "#/components/schemas/LegalRepresentative"
+        namedEmployees:
+          type: array
+          items:
+            $ref: "#/components/schemas/NamedEmployee"
+        members:
+          type: integer
+          example: 22
+        membersCountDate:
+          type: string
+          description: UTC DateTime of the member count
+          example: "2021-12-31T00:00:00.000Z"
+        membershipEntries:
+          type: array
+          items:
+            type: string
+            example: "Bundesverband deutscher Lobbyisten e. V."
+ 
+    Address:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "NATIONAL"
+          enum:
+          - "POSTBOX"
+          - "NATIONAL"
+          - "FOREIGN"
+        street:
+          type: string
+          example: "Adelsalle"
+        streetNumber:
+          type: string
+          example: 1
+        zipCode:
+          type: string
+          example: 11111
+        city:
+          type: string
+          example: "Musterstadt"
+        poxBox:
+          type: string
+          example: 121314
+        country:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "DE"
+        nationalAdditional1:
+          type: string
+        nationalAdditional2:
+          type: string
+        internationalAdditional1:
+          type: string
+        internationalAdditional2:
+          type: string
+
+    LegalForm:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "LF_EV"
+        code_de:
+          type: string
+          example: "Eingetragener Verein (e. V.)"
+        code_en:
+          type: string
+          example: "Registered association"
+        type:
+          type: string
+          example: "JURISTIC_PERSON"
+          enum:
+          - "JURISTIC_PERSON"
+          - "LEGAL_ASSOCIATION"
+          - "OTHER_ASSOCIATION_OF_PERSONS"
+          - "NETWORK_PLATFORM_OR_OTHER"
+        legalFormText:
+          type: string
+
+    LegalRepresentative:
+      type: object
+      properties:
+        commonFirstName:
+          type: string
+          example: "Max"
+        lastName:
+          type: string
+          example: "Mustermann"
+        function:
+          type: string
+          example: "Vorsitzender"
+        phoneNumber:
+          type: string
+          example: "+4911132323232"
+        organizationMemberEmails:
+          type: array
+          items:
+            type: string
+            example: "max.mustermann@acme.org"
+        academicDegreeBefore:
+          type: string
+          example: "Prof. Dr."
+        academicDegreeAfter:
+          type: string
+          example: "Prof. Dr. Dr."
+
+    NamedEmployee:
+      type: object
+      properties:
+        academicDegreeBefore:
+          type: string
+          example: "Prof. Dr."
+        commonFirstName:
+          type: string
+          example: "Erika"
+        lastName:
+          type: string
+          example: "Exemplar"
+        academicDegreeAfter:
+          type: string
+          example: "Prof. Dr. Dr."
+
+    LegislativeProject:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Kälteanlagenbauermeisterverordnung"
+        printingNumber:
+          type: string
+          description: "\"Drucksachennummer\" of the legislation"
+          example: "20/26835"
+
+    Donator:
+      type: object
+      properties:
+        categoryType:
+          type: string
+          enum:
+          - "DONATIONS"
+          - "PUBLIC_ALLOWANCES"
+          example: "PUBLIC_ALLOWANCES"
+        name:
+          type: string
+          example: "Europäische Union"
+        description:
+          type: string
+        location:
+          type: string
+          example: "Brüssel"
+        fiscalYearStart:
+          type: string
+          example: "10/20"
+        fiscalYearEnd:
+          type: string
+          example: "09/21"
+        donationEuro:
+          type: object
+          description: Received money in € 10,000 increments.
+          required:
+            - "from"
+            - "to"
+          properties:
+            from:
+              type: integer
+              example: 10001
+            to:
+              type: integer
+              example: 20000
+
+    FieldOfInterest:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "FOI_ECONOMY"
+          enum:
+            - "FOI_AGRICULTURE_FOOD"
+            - "FOI_AGRICULTURE_FOOD|FOI_AF_AQUACULTURE"
+            - "FOI_AGRICULTURE_FOOD|FOI_AF_FOOD_INDUSTRY"
+            - "FOI_AGRICULTURE_FOOD|FOI_AF_FOOD_SAFETY"
+            - "FOI_AGRICULTURE_FOOD|FOI_AF_FORESTRY"
+            - "FOI_AGRICULTURE_FOOD|FOI_AF_OTHER"
+            - "FOI_BUNDESTAG"
+            - "FOI_BUNDESTAG|FOI_BUNDESTAG_LEGAL"
+            - "FOI_BUNDESTAG|FOI_BUNDESTAG_OTHER"
+            - "FOI_BUNDESTAG|FOI_BUNDESTAG_PARLIAMENTARY"
+            - "FOI_BUNDESTAG|FOI_BUNDESTAG_VOTE"
+            - "FOI_CULTURE"
+            - "FOI_DEFENSE"
+            - "FOI_DEFENSE|FOI_DEFENSE_AFFAIRS"
+            - "FOI_DEFENSE|FOI_DEFENSE_ARMAMENTS"
+            - "FOI_DEFENSE|FOI_DEFENSE_OTHER"
+            - "FOI_DEFENSE|FOI_DEFENSE_POLICY"
+            - "FOI_DEVELOPMENT_POLICY"
+            - "FOI_ECONOMY"
+            - "FOI_ECONOMY|FOI_ECONOMY_AUTOMOBILE"
+            - "FOI_ECONOMY|FOI_ECONOMY_COMPETITION_LAW"
+            - "FOI_ECONOMY|FOI_ECONOMY_CONSUMER_PROTECTION"
+            - "FOI_ECONOMY|FOI_ECONOMY_ECOMMERCE"
+            - "FOI_ECONOMY|FOI_ECONOMY_FINANCE"
+            - "FOI_ECONOMY|FOI_ECONOMY_HANDCRAFT"
+            - "FOI_ECONOMY|FOI_ECONOMY_INDUSTRIAL"
+            - "FOI_ECONOMY|FOI_ECONOMY_INSURANCE"
+            - "FOI_ECONOMY|FOI_ECONOMY_OTHER"
+            - "FOI_ECONOMY|FOI_ECONOMY_SAM_BUSINESS"
+            - "FOI_ECONOMY|FOI_ECONOMY_SERVICES"
+            - "FOI_EDUCATION_PARENTING"
+            - "FOI_EDUCATION_PARENTING|FOI_EP_ACADEMIC"
+            - "FOI_EDUCATION_PARENTING|FOI_EP_CHILDHOOD"
+            - "FOI_EDUCATION_PARENTING|FOI_EP_OTHER"
+            - "FOI_EDUCATION_PARENTING|FOI_EP_SCHOOL"
+            - "FOI_EDUCATION_PARENTING|FOI_EP_WORK"
+            - "FOI_ENERGY"
+            - "FOI_ENERGY|FOI_ENERGY_FOSSILE"
+            - "FOI_ENERGY|FOI_ENERGY_NET"
+            - "FOI_ENERGY|FOI_ENERGY_NUCLEAR"
+            - "FOI_ENERGY|FOI_ENERGY_OTHER"
+            - "FOI_ENERGY|FOI_ENERGY_OVERALL"
+            - "FOI_ENERGY|FOI_ENERGY_RENEWABLE"
+            - "FOI_ENVIRONMENT"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_ANIMAL"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_CLIMATE"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_OTHER"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_POLLUTION"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_SPECIES"
+            - "FOI_ENVIRONMENT|FOI_ENVIRONMENT_SUSTAINABILITY"
+            - "FOI_EUROPEAN_UNION"
+            - "FOI_EUROPEAN_UNION|FOI_EU_COOPERATION"
+            - "FOI_EUROPEAN_UNION|FOI_EU_DOMESTIC_MARKET"
+            - "FOI_EUROPEAN_UNION|FOI_EU_LAWS"
+            - "FOI_EUROPEAN_UNION|FOI_EU_OTHER"
+            - "FOI_EUROPEAN_UNION|FOI_EU_POLITICS"
+            - "FOI_EUROPEAN_UNION|FOI_EU_SAFETY_POLICY"
+            - "FOI_FOREIGN_AFFAIRS"
+            - "FOI_FOREIGN_AFFAIRS|FOI_FA_BRD"
+            - "FOI_FOREIGN_AFFAIRS|FOI_FA_CULTURE"
+            - "FOI_FOREIGN_AFFAIRS|FOI_FA_HUMAN_RIGHTS"
+            - "FOI_FOREIGN_AFFAIRS|FOI_FA_INTERNATIONAL"
+            - "FOI_FOREIGN_AFFAIRS|FOI_FA_OTHER"
+            - "FOI_FOREIGN_TRADE"
+            - "FOI_GERMAN_UNITY"
+            - "FOI_GERMAN_UNITY|FOI_GU_LIVING_CONDITIONS"
+            - "FOI_GERMAN_UNITY|FOI_GU_OTHER"
+            - "FOI_GERMAN_UNITY|FOI_GU_SED_JUSTICE"
+            - "FOI_HEALTH"
+            - "FOI_HEALTH|FOI_HEALTH_CARE"
+            - "FOI_HEALTH|FOI_HEALTH_MEDICINE"
+            - "FOI_HEALTH|FOI_HEALTH_OTHER"
+            - "FOI_HEALTH|FOI_HEALTH_PROMOTION"
+            - "FOI_HEALTH|FOI_HEALTH_SUPPLY"
+            - "FOI_INTERNAL_SECURITY"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_ANTI_EXTREMISM"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_ANTI_TERRORISM"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_CRIME"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_CYBER"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_DISASTER_CONTROL"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_OTHER"
+            - "FOI_INTERNAL_SECURITY|FOI_IS_VICTIM_PROTECTION"
+            - "FOI_LAW"
+            - "FOI_LAW|FOI_LAW_CIVIL_RIGHT"
+            - "FOI_LAW|FOI_LAW_CRIMINAL"
+            - "FOI_LAW|FOI_LAW_LEGAL"
+            - "FOI_LAW|FOI_LAW_OTHER"
+            - "FOI_LAW|FOI_LAW_PUBLIC"
+            - "FOI_LEISURE_AND_SPORT"
+            - "FOI_LEISURE_AND_SPORT|FOI_LAS_OTHER"
+            - "FOI_LEISURE_AND_SPORT|FOI_LAS_POPULAR_SPORT"
+            - "FOI_LEISURE_AND_SPORT|FOI_LAS_PROFESSIONAL_SPORT"
+            - "FOI_LEISURE_AND_SPORT|FOI_LAS_TOURISM"
+            - "FOI_MEDIA"
+            - "FOI_MEDIA|FOI_MEDIA_ADVERTISEMENT"
+            - "FOI_MEDIA|FOI_MEDIA_COMMUNICATION"
+            - "FOI_MEDIA|FOI_MEDIA_COPYRIGHT"
+            - "FOI_MEDIA|FOI_MEDIA_DIGITALIZATION"
+            - "FOI_MEDIA|FOI_MEDIA_FREEDOM_OF_SPEECH"
+            - "FOI_MEDIA|FOI_MEDIA_INTERNET_POLICY"
+            - "FOI_MEDIA|FOI_MEDIA_MASS"
+            - "FOI_MEDIA|FOI_MEDIA_OTHER"
+            - "FOI_MEDIA|FOI_MEDIA_PRIVACY"
+            - "FOI_OTHER"
+            - "FOI_POLITICAL_PARTIES"
+            - "FOI_PUBLIC_FINANCE"
+            - "FOI_REFUGEE_INTEGRATION_POLICY"
+            - "FOI_REFUGEE_INTEGRATION_POLICY|FOI_RPI_INTEGRATION"
+            - "FOI_REFUGEE_INTEGRATION_POLICY|FOI_RPI_LAWS"
+            - "FOI_REFUGEE_INTEGRATION_POLICY|FOI_RPI_MIGRATION"
+            - "FOI_REFUGEE_INTEGRATION_POLICY|FOI_RPI_OTHER"
+            - "FOI_REFUGEE_INTEGRATION_POLICY|FOI_RPI_REFUGEE"
+            - "FOI_REGINAL_PLANNING"
+            - "FOI_REGINAL_PLANNING|FOI_RP_CITY"
+            - "FOI_REGINAL_PLANNING|FOI_RP_COUNTRYSIDE"
+            - "FOI_REGINAL_PLANNING|FOI_RP_DEVELOPMENT"
+            - "FOI_REGINAL_PLANNING|FOI_RP_OTHER"
+            - "FOI_REGINAL_PLANNING|FOI_RP_RESIDE"
+            - "FOI_SCIENCE_RESEARCH_TECHNOLOGY"
+            - "FOI_SOCIAL_POLICY"
+            - "FOI_SOCIAL_POLICY|FOI_SP_CHILDREN"
+            - "FOI_SOCIAL_POLICY|FOI_SP_DISABILITY"
+            - "FOI_SOCIAL_POLICY|FOI_SP_DIVERSITY"
+            - "FOI_SOCIAL_POLICY|FOI_SP_ELDERLY"
+            - "FOI_SOCIAL_POLICY|FOI_SP_FAMILY"
+            - "FOI_SOCIAL_POLICY|FOI_SP_GENDER"
+            - "FOI_SOCIAL_POLICY|FOI_SP_OTHER"
+            - "FOI_SOCIAL_POLICY|FOI_SP_RELIGION"
+            - "FOI_SOCIAL_SECURITY"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_ACCIDENT"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_BASIC"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_HEALTH"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_LONGTERM"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_OLD_AGE"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_OTHER"
+            - "FOI_SOCIAL_SECURITY|FOI_SS_UNEMPLOYMENT"
+            - "FOI_STATE_ADMIN"
+            - "FOI_STATE_ADMIN|FOI_SA_ORGANIZATION"
+            - "FOI_STATE_ADMIN|FOI_SA_OTHER"
+            - "FOI_STATE_ADMIN|FOI_SA_PUBLIC_ADMINISTRATION"
+            - "FOI_STATE_ADMIN|FOI_SA_PUBLIC_SERVICE"
+            - "FOI_TRANSPORTATION"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_AEROSPACE"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_AUTOMOBILE"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_FREIGHT_TRANSPORT"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_INDRASTRUCTURE"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_OTHER"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_POLICY"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_PUBLIC_TRANSPORT"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_RAIL"
+            - "FOI_TRANSPORTATION|FOI_TRANSPORTATION_SHIPPING"
+            - "FOI_WORK"
+            - "FOI_WORK|FOI_WORK_OTHER"
+            - "FOI_WORK|FOI_WORK_POLICY"
+            - "FOI_WORK|FOI_WORK_RIGHT"
+        de:
+          type: string
+          example: "Wirtschaft"
+        en:
+          type: string
+          example: "Economy"
+        fieldOfInterestText:
+          type: string
+          description: "Field of interest if code is `FOI_OTHER`"
+ 
+    ClientOrganization:
+      type: object
+      required:
+        - "name"
+        - "phoneNumber"
+        - "address"
+        - "legalForm"
+      properties:
+        name:
+          type: string
+          example: "Gute Wirtschaft GmbH"
+        phoneNumber:
+          type: string
+        address:
+          $ref: "#/components/schemas/Address"
+        legalForm: 
+          $ref: "#/components/schemas/LegalForm"
+        organizationEmails:
+          type: array
+          items:
+            type: string
+            example: "kontakt@gute-wirtschaft.de"
+        websites:
+          type: array
+          items:
+            type: string
+            example: "https://gute-wirtschaft.de"
+        legalRepresentatives:
+          type: array
+          items:
+            $ref: "#/components/schemas/LegalRepresentative"
+
+    Media:
+      type: object
+      required:
+      - "type"
+      - "media"
+      properties:
+        "type":
+          type: "string"
+          enum:
+          - "CODE_OF_CONDUCT"
+          - "ANNUAL_REPORT"
+        media:
+          type: object
+          required:
+          - "fileName"
+          - "url"
+          - "mimeType"
+          properties:
+            fileName:
+              type: string
+              example: "Bericht.pdf"
+            url:
+              type: string
+              example: "https://www.lobbyregister.bundestag.de/media/11/22/33333/Bericht.pdf"
+            mimeType:
+              type: string
+              example: "application/pdf"

@@ -332,16 +332,16 @@ components:
           example: "Adelsalle"
         streetNumber:
           type: string
-          example: 1
+          example: "1"
         zipCode:
           type: string
-          example: 11111
+          example: "11111"
         city:
           type: string
           example: "Musterstadt"
         poxBox:
           type: string
-          example: 121314
+          example: "121314"
         country:
           type: object
           properties:

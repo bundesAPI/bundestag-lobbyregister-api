@@ -1,6 +1,6 @@
 openapi: '3.0.2'
 info:
-  title: "Bundestag: Lobbyregister"
+  title: "Bundestag: Lobbyregister API"
   version: '1.3' # According to the latest newsletter
 
 servers:
@@ -33,12 +33,14 @@ components:
   schemas:
     SortOrder:
       type: string
+      description: "Sorting criterion"
       example: "REGISTRATION_DESC"
       enum:
-      - "REGISTRATION_DESC"
       - "REGISTRATION_ASC"
+      - "REGISTRATION_DESC"
       - "NAME_ASC"
       - "NAME_DESC"
+      - "FINANCIALEXPENSES_ASC"
       - "FINANCIALEXPENSES_DESC"
 
     DetailedSearchResults:

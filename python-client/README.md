@@ -65,7 +65,7 @@ with bundestag_lobbyregister.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = default_api.DefaultApi(api_client)
     q = "q_example" # str | The text to search for. Will search in all text fields.  Leave empty to retrieve all registrations (optional)
-sort = SortOrder("REGISTRATION_DESC") # SortOrder |  (optional)
+    sort = SortOrder("REGISTRATION_DESC") # SortOrder |  (optional)
 
     try:
         # Search through all registrations

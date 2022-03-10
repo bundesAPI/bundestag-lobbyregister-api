@@ -2,7 +2,7 @@
 [tool.poetry]
 name = "de-bundestag-lobbyregister"
 version = "0.1.0"
-description = "Bundestag: Lobbyregister"
+description = "Bundestag: Lobbyregister API"
 keywords = ["OpenAPI", "OpenAPI-Generator", "bundestag-lobbyregister", "App", "API"]
 homepage = "https://github.com/bundesAPI/bundestag-lobbyregister-api"
 authors = ["BundesAPI <kontakt@bund.dev>"]

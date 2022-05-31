@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: "Bundestag: Lobbyregister API"
-  version: '1.3' # According to the latest newsletter
+  version: '1.6' # According to the latest newsletter
 
 servers:
   - url: https://www.lobbyregister.bundestag.de/
@@ -40,6 +40,8 @@ components:
       - "REGISTRATION_DESC"
       - "NAME_ASC"
       - "NAME_DESC"
+      - "NUMBEROFEMPLOYEES_ASC"
+      - "NUMBEROFEMPLOYEES_DESC"
       - "FINANCIALEXPENSES_ASC"
       - "FINANCIALEXPENSES_DESC"
 

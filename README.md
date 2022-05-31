@@ -1,7 +1,6 @@
 # Bundestag Lobbyregister API
 
-API des Deutschen Bundestags zum Lobbyregister für die Interessenvertretung gegenüber dem Deutschen Bundestag und der Bundesregierung.
-
+API des Deutschen Bundestags zum [Lobbyregister](https://www.lobbyregister.bundestag.de/startseite) für die Interessenvertretung gegenüber dem Deutschen Bundestag und der Bundesregierung.
 
 Am 1. Januar 2022 ist das Gesetz zur Einführung eines Lobbyregisters für die Interessenvertretung gegenüber dem Deutschen Bundestag und gegenüber der Bundesregierung vom 16. April 2021 (Lobbyregistergesetz – LobbyRG) in Kraft getreten.
 Das Lobbyregistergesetz wurde am 16. April 2021 im Bundesgesetzblatt verkündet (BGBl. 2021 I S. 818, Anhang 1).
@@ -17,10 +16,12 @@ https://www.lobbyregister.bundestag.de/informationen-und-hilfe
 	
 Die API zum Lobbyregister bietet Nutzer/-innen die Möglichkeit, die öffentlichen Daten zu Detailprofilen der registrierten Interessenvertreter/-innen im JSON Format herunterzuladen, potenziell gefiltert und sortiert u.a. auf Basis folgender GET-Parameter:
 
-Das 
+
 **Parameter:** *q* (Optional)
 
 Query String: Enthält die angegebene Suchanfrage - einen Text, der in einem der Textfelder vorkommen muss. Wird der Parameter nicht gesetzt, werden alle Registereinträge ausgegeben.
+
+Sie können mithilfe von Anführungszeichen Ihre Suchergebnisse auf exakte Treffer beschränken, z. B. "Energie" statt Energie. Mithilfe der booleschen Operatoren UND, ODER, NICHT und durch die Verwendung von Klammern () können Sie außerdem Ihre Suchanfrage verfeinern.
 
 
 **Parameter:** *sort* (Optional)
@@ -29,6 +30,8 @@ Query String: Enthält die angegebene Suchanfrage - einen Text, der in einem der
 - "REGISTRATION_DESC"
 - "NAME_ASC"
 - "NAME_DESC"
+- "NUMBEROFEMPLOYEES_ASC"
+- "NUMBEROFEMPLOYEES_DESC"
 - "FINANCIALEXPENSES_ASC"
 - "FINANCIALEXPENSES_DESC"
 
@@ -37,14 +40,17 @@ Sortierungs-Kriterium:
 "REGISTRATION_DESC"=Sortierung nach Registernummer in absteigender Reihenfolge; 
 "NAME_ASC"=Sortierung nach Name in aufsteigender Reihenfolge; 
 "NAME_DESC"=Sortierung nach Name in absteigender Reihenfolge; 
-"FINANCIALEXPENSES_DESC"=Sortierung nach Höhe der finanziellen Aufwendungen in aufsteigender Reihenfolge (beginnend mit Einträgen ohne Angabe); 
-"FINANCIALEXPENSES_DESC"=Sortierung nach Höhe der finanziellen Aufwendungen in absteigender Reihenfolge; 
+"NUMBEROFEMPLOYEES_ASC"=Sortierung nach Angestellten in aufsteigender Reihenfolge; 
+"NUMBEROFEMPLOYEES_DESC"=Sortierung nach Angestellten in absteigender Reihenfolge; 
+"FINANCIALEXPENSES_ASC"=Sortierung nach Höhe der finanziellen Aufwendungen in aufsteigender Reihenfolge (beginnend mit Einträgen ohne Angabe); 
+"FINANCIALEXPENSES_DESC"=Sortierung nach Höhe der finanziellen Aufwendungen in absteigender Reihenfolge;
+ 
 Wird der Parameter nicht gesetzt wird die erste Option als Kriterium herangezogen.
 
 
 ### Alternative Zugänge
 
-Eine Vorschau der o.g. Ergebnisse lässt sich unter Verwendung der o.g. GET-Parameter von https://www.lobbyregister.bundestag.de/sucheJson beziehen. 
+Eine Vorschau der o.g. Ergebnisse lässt sich unter Verwendung der o.g. GET-Parameter von https://www.lobbyregister.bundestag.de/sucheJson beziehen. Auch lassen sich über diverse Filter-Parameter Teilmengen der Einträge beziehen (z.B. filter%5Bfieldsofinterest%5D%5BFOI_WORK%7CFOI_WORK_POLICY%5D=true).
 Die Ergebnisse zu einzelnen Registereinträgen lassen sich wiederum über die Pfad-Parameter Registernummer *registerNumber* und Interessenvertreter/-innen-ID *registerEntryDetail-id* auch gezielt von https://www.lobbyregister.bundestag.de/suche/{registerNumber}/{registerEntryDetail-id} beziehen.
 
 

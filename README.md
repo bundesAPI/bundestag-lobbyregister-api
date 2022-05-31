@@ -3,13 +3,21 @@
 API des Deutschen Bundestags zum Lobbyregister für die Interessenvertretung gegenüber dem Deutschen Bundestag und der Bundesregierung.
 
 
+Am 1. Januar 2022 ist das Gesetz zur Einführung eines Lobbyregisters für die Interessenvertretung gegenüber dem Deutschen Bundestag und gegenüber der Bundesregierung vom 16. April 2021 (Lobbyregistergesetz – LobbyRG) in Kraft getreten.
+Das Lobbyregistergesetz wurde am 16. April 2021 im Bundesgesetzblatt verkündet (BGBl. 2021 I S. 818, Anhang 1).
+In das Lobbyregister müssen sich alle natürlichen Personen und Organisationen eintragen, die Kontakt zu Mitgliedern des Bundestages oder der Bundesregierung aufnehmen, um Einfluss auf politische Prozesse zu nehmen, oder die solche Tätigkeiten in Auftrag geben, wenn ihre Tätigkeit eine im Gesetz definierte Erheblichkeitsschwelle überschreitet und wenn keine der im Gesetz vorgesehenen Ausnahmen vorliegt. Auch eine freiwillige Eintragung ist möglich.
+Wer sich trotz bestehender Registrierungspflicht nicht einträgt oder Eintragungen unrichtig, unvollständig oder nicht rechtzeitig vornimmt, begeht eine Ordnungswidrigkeit, die mit einer Geldbuße von bis zu 50.000 Euro geahndet werden kann.
+Weitere Informationen zum Hintergrund finden sich online unter
+https://www.lobbyregister.bundestag.de/informationen-und-hilfe
+
+
 ## Registereinträge Detailprofile
 
 **URL:** https://www.lobbyregister.bundestag.de/sucheDetailJson
 	
 Die API zum Lobbyregister bietet Nutzer/-innen die Möglichkeit, die öffentlichen Daten zu Detailprofilen der registrierten Interessenvertreter/-innen im JSON Format herunterzuladen, potenziell gefiltert und sortiert u.a. auf Basis folgender GET-Parameter:
 
-
+Das 
 **Parameter:** *q* (Optional)
 
 Query String: Enthält die angegebene Suchanfrage - einen Text, der in einem der Textfelder vorkommen muss. Wird der Parameter nicht gesetzt, werden alle Registereinträge ausgegeben.

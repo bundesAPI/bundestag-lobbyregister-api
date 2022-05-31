@@ -51,5 +51,5 @@ Die Ergebnisse zu einzelnen Registereinträgen lassen sich wiederum über die Pf
 ## Beispiel
 
 ```bash
-interessenvertretungen=$(curl -m 60 'https://www.lobbyregister.bundestag.de/sucheDetailJson?q=Security&sort=FINANCIALEXPENSES_DESC')
+interessenvertretungen=$(curl -m 60 'https://www.lobbyregister.bundestag.de/sucheDetailJson?sort=FINANCIALEXPENSES_DESC')
 ```

@@ -8,7 +8,7 @@ Das Lobbyregistergesetz wurde am 16. April 2021 im Bundesgesetzblatt verkündet 
 In das Lobbyregister müssen sich alle natürlichen Personen und Organisationen eintragen, die Kontakt zu Mitgliedern des Bundestages oder der Bundesregierung aufnehmen, um Einfluss auf politische Prozesse zu nehmen, oder die solche Tätigkeiten in Auftrag geben, wenn ihre Tätigkeit eine im Gesetz definierte Erheblichkeitsschwelle überschreitet und wenn keine der im Gesetz vorgesehenen Ausnahmen vorliegt. Auch eine freiwillige Eintragung ist möglich.
 Wer sich trotz bestehender Registrierungspflicht nicht einträgt oder Eintragungen unrichtig, unvollständig oder nicht rechtzeitig vornimmt, begeht eine Ordnungswidrigkeit, die mit einer Geldbuße von bis zu 50.000 Euro geahndet werden kann.
 Weitere Informationen zum Hintergrund finden sich online unter
-https://www.lobbyregister.bundestag.de/informationen-und-
+https://www.lobbyregister.bundestag.de/informationen-und-hilfe
 
 
 ## Registereinträge Detailprofile

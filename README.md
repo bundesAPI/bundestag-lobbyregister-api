@@ -2,12 +2,7 @@
 
 API des Deutschen Bundestags zum [Lobbyregister](https://www.lobbyregister.bundestag.de/startseite) für die Interessenvertretung gegenüber dem Deutschen Bundestag und der Bundesregierung.
 
-Am 1. Januar 2022 ist das Gesetz zur Einführung eines Lobbyregisters für die Interessenvertretung gegenüber dem Deutschen Bundestag und gegenüber der Bundesregierung vom 16. April 2021 (Lobbyregistergesetz – LobbyRG) in Kraft getreten.
-Das Lobbyregistergesetz wurde am 16. April 2021 im Bundesgesetzblatt verkündet (BGBl. 2021 I S. 818, Anhang 1).
-In das Lobbyregister müssen sich alle natürlichen Personen und Organisationen eintragen, die Kontakt zu Mitgliedern des Bundestages oder der Bundesregierung aufnehmen, um Einfluss auf politische Prozesse zu nehmen, oder die solche Tätigkeiten in Auftrag geben, wenn ihre Tätigkeit eine im Gesetz definierte Erheblichkeitsschwelle überschreitet und wenn keine der im Gesetz vorgesehenen Ausnahmen vorliegt. Auch eine freiwillige Eintragung ist möglich.
-Wer sich trotz bestehender Registrierungspflicht nicht einträgt oder Eintragungen unrichtig, unvollständig oder nicht rechtzeitig vornimmt, begeht eine Ordnungswidrigkeit, die mit einer Geldbuße von bis zu 50.000 Euro geahndet werden kann.
-Weitere Informationen zum Hintergrund finden sich online unter
-https://www.lobbyregister.bundestag.de/informationen-und-hilfe
+Am 1. Januar 2022 trat das Lobbyregistergesetz in Kraft. Es verlangt, dass alle Personen und Organisationen, die mit Mitgliedern des Bundestages oder der Bundesregierung Kontakt aufnehmen, um politischen Einfluss zu nehmen, sich registrieren lassen. Die Nichtbeachtung dieser Pflicht oder die ungenaue, unvollständige oder verspätete Registrierung kann mit einer Geldstrafe von bis zu 50.000 Euro geahndet werden. Weitere Informationen sind online verfügbar unter https://www.lobbyregister.bundestag.de/informationen-und-hilfe.
 
 
 ## Registereinträge Detailprofile
